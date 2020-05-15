@@ -13,8 +13,8 @@ class UserDestroyRequest extends Request
      */
      public function authorize()
      {
-         return !($this->route('users') == config('cms.default_user_id') ||
-                    $this->route('users') == auth()->user()->id);
+         return !($this->route('user') == config('cms.default_user_id') ||
+                    $this->route('user') == auth()->user()->id);
      }
 
      public function forbiddenResponse()

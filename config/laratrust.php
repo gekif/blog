@@ -9,105 +9,260 @@
  */
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Use MorphMap in relationships between models
+    |--------------------------------------------------------------------------
+    |
+    | If true, the morphMap feature is going to be used. The array values that
+    | are going to be used are the ones inside the 'user_models' array.
+    |
+    */
+    'use_morph_map' => false,
 
     /*
     |--------------------------------------------------------------------------
-    | Laratrust Role Model
+    | Which permissions and role checker to use.
     |--------------------------------------------------------------------------
     |
-    | This is the Role model used by Laratrust to create correct relations.  Update
-    | the role if it is in a different namespace.
+    | Defines if you want to use the roles and permissions checker.
+    | Available:
+    | - default: Check for the roles and permissions using the method that Laratrust
+                 has always used.
+    | - query: Check for the roles and permissions using direct queries to the database.
+    |           This method doesn't support cache yet.
     |
-    */
-    'role' => 'App\Role',
+     */
+    'checker' => 'default',
 
     /*
     |--------------------------------------------------------------------------
-    | Laratrust Roles Table
+    | Cache
     |--------------------------------------------------------------------------
     |
-    | This is the roles table used by Laratrust to save roles to the database.
+    | Manage Laratrust's cache configurations. It uses the driver defined in the
+    | config/cache.php file.
     |
     */
-    'roles_table' => 'roles',
+    'cache' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Use cache in the package
+        |--------------------------------------------------------------------------
+        |
+        | Defines if Laratrust will use Laravel's Cache to cache the roles and permissions.
+        | NOTE: Currently the database check does not use cache.
+        |
+        */
+        'enabled' => true,
+
+        /*
+        |--------------------------------------------------------------------------
+        | Time to store in cache Laratrust's roles and permissions.
+        |--------------------------------------------------------------------------
+        |
+        | Determines the time in SECONDS to store Laratrust's roles and permissions in the cache.
+        |
+        */
+        'expiration_time' => 3600,
+    ],
 
     /*
     |--------------------------------------------------------------------------
-    | Laratrust Permission Model
+    | Use teams feature in the package
     |--------------------------------------------------------------------------
     |
-    | This is the Permission model used by Laratrust to create correct relations.
-    | Update the permission if it is in a different namespace.
+    | Defines if Laratrust will use the teams feature.
+    | Please check the docs to see what you need to do in case you have the package already configured.
     |
     */
-    'permission' => 'App\Permission',
+    'use_teams' => false,
 
     /*
     |--------------------------------------------------------------------------
-    | Laratrust Permissions Table
+    | Strict check for roles/permissions inside teams
     |--------------------------------------------------------------------------
     |
-    | This is the permissions table used by Laratrust to save permissions to the
-    | database.
+    | Determines if a strict check should be done when checking if a role or permission
+    | is attached inside a team.
+    | If it's false, when checking a role/permission without specifying the team,
+    | it will check only if the user has attached that role/permission ignoring the team.
     |
     */
-    'permissions_table' => 'permissions',
+    'teams_strict_check' => false,
 
     /*
     |--------------------------------------------------------------------------
-    | Laratrust permission_role Table
+    | Laratrust User Models
     |--------------------------------------------------------------------------
     |
-    | This is the permission_role table used by Laratrust to save relationship
-    | between permissions and roles to the database.
+    | This is the array that contains the information of the user models.
+    | This information is used in the add-trait command, and for the roles and
+    | permissions relationships with the possible user models.
+    |
+    | The key in the array is the name of the relationship inside the roles and permissions.
     |
     */
-    'permission_role_table' => 'permission_role',
+    'user_models' => [
+        'users' => 'App\User',
+    ],
 
     /*
     |--------------------------------------------------------------------------
-    | Laratrust role_user Table
+    | Laratrust Models
     |--------------------------------------------------------------------------
     |
-    | This is the role_user table used by Laratrust to save assigned roles to the
-    | database.
+    | These are the models used by Laratrust to define the roles, permissions and teams.
+    | If you want the Laratrust models to be in a different namespace or
+    | to have a different name, you can do it here.
     |
     */
-    'role_user_table' => 'role_user',
+    'models' => [
+        /**
+         * Role model
+         */
+        'role' => 'App\Role',
+
+        /**
+         * Permission model
+         */
+        'permission' => 'App\Permission',
+
+        /**
+         * Team model
+         */
+        'team' => 'App\Team',
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
-    | User Foreign key on Laratrust's role_user Table (Pivot)
+    | Laratrust Tables
     |--------------------------------------------------------------------------
+    |
+    | These are the tables used by Laratrust to store all the authorization data.
+    |
     */
-    'user_foreign_key' => 'user_id',
+    'tables' => [
+        /**
+         * Roles table.
+         */
+        'roles' => 'roles',
+
+        /**
+         * Permissions table.
+         */
+        'permissions' => 'permissions',
+
+        /**
+         * Teams table.
+         */
+        'teams' => 'teams',
+
+        /**
+         * Role - User intermediate table.
+         */
+        'role_user' => 'role_user',
+
+        /**
+         * Permission - User intermediate table.
+         */
+        'permission_user' => 'permission_user',
+
+        /**
+         * Permission - Role intermediate table.
+         */
+        'permission_role' => 'permission_role',
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
-    | Role Foreign key on Laratrust's role_user and permission_role Tables (Pivot)
+    | Laratrust Foreign Keys
     |--------------------------------------------------------------------------
+    |
+    | These are the foreign keys used by laratrust in the intermediate tables.
+    |
     */
-    'role_foreign_key' => 'role_id',
+    'foreign_keys' => [
+        /**
+         * User foreign key on Laratrust's role_user and permission_user tables.
+         */
+        'user' => 'user_id',
+
+        /**
+         * Role foreign key on Laratrust's role_user and permission_role tables.
+         */
+        'role' => 'role_id',
+
+        /**
+         * Role foreign key on Laratrust's permission_user and permission_role tables.
+         */
+        'permission' => 'permission_id',
+
+        /**
+         * Role foreign key on Laratrust's role_user and permission_user tables.
+         */
+        'team' => 'team_id',
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
-    | Permission Foreign key on Laratrust's permission_role Table (Pivot)
+    | Laratrust Middleware
     |--------------------------------------------------------------------------
+    |
+    | This configuration helps to customize the Laratrust middleware behavior.
+    |
     */
-    'permission_foreign_key' => 'permission_id',
-    
-    /*
-    |--------------------------------------------------------------------------
-    | Method to be called in the middleware return case
-    | Available: abort|redirect
-    |--------------------------------------------------------------------------
-    */
-    'middleware_handling' => 'abort',
+    'middleware' => [
+        /**
+         * Define if the laratrust middleware are registered automatically in the service provider
+         */
+        'register' => true,
+
+        /**
+         * Method to be called in the middleware return case.
+         * Available: abort|redirect
+         */
+        'handling' => 'abort',
+
+        /**
+         * Handlers for the unauthorized method in the middlewares.
+         * The name of the handler must be the same as the handling.
+         */
+        'handlers' => [
+            /**
+             * Aborts the execution with a 403 code and allows you to provide the response text
+             */
+            'abort' => [
+                'code' => 403,
+                'message' => 'User does not have any of the necessary access rights.'
+            ],
+            /**
+             * Redirects the user to the given url.
+             * If you want to flash a key to the session,
+             * you can do it by setting the key and the content of the message
+             * If the message content is empty it won't be added to the redirection.
+             */
+            'redirect' => [
+                'url' => '/home',
+                'message' => [
+                    'key' => 'error',
+                    'content' => ''
+                ]
+            ]
+        ]
+    ],
 
     /*
     |--------------------------------------------------------------------------
-    | Parameter passed to the middleware_handling method
+    | Laratrust Magic 'can' Method
     |--------------------------------------------------------------------------
+    |
+    | Supported cases for the magic can method (Refer to the docs).
+    | Available: camel_case|snake_case|kebab_case
+    |
     */
-    'middleware_params' => '403',
+    'magic_can_method_case' => 'kebab_case',
 ];

@@ -25,10 +25,10 @@ class UserUpdateRequest extends Request
     {
         return [
             'name'     => 'required',
-            'email'    => 'email|required|unique:users,email,' . $this->route("users"),
+            'email'    => 'email|required|unique:users,email,' . $this->route("user"),
             'password' => 'required_with:password_confirmation|confirmed',
             'role'     => 'required',
-            'slug'     => 'required|unique:users,slug,' . $this->route("users"),
+            'slug'     => 'required|unique:users,slug,' . $this->route("user"),
         ];
     }
 }

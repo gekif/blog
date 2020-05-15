@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Laravel Markdown.
  *
@@ -29,7 +31,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | CommonMark Extenstions
+    | CommonMark Extensions
     |--------------------------------------------------------------------------
     |
     | This option specifies what extensions will be automatically enabled.
@@ -116,16 +118,41 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Safe Mode
+    | HTML Input
     |--------------------------------------------------------------------------
     |
-    | This option specifies if raw HTML is rendered in the document. Setting
-    | this to true will not render HTML, and false will.
+    | This option specifies how to handle untrusted HTML input.
     |
-    | Default: false
+    | Default: 'strip'
     |
     */
 
-    'safe' => false,
+    'html_input' => 'strip',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Allow Unsafe Links
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies whether to allow risky image URLs and links.
+    |
+    | Default: true
+    |
+    */
+
+    'allow_unsafe_links' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maximum Nesting Level
+    |--------------------------------------------------------------------------
+    |
+    | This option specifies the maximum permitted block nesting level.
+    |
+    | Default: INF
+    |
+    */
+
+    'max_nesting_level' => INF,
 
 ];
